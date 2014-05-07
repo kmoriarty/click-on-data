@@ -5,11 +5,13 @@ from PIL import Image, ImageTk
 from sys import argv
 
 data = list()
+size = 600, 600
 
 def main():
     window = Tkinter.Tk(className="bla")
     #argv[1] if len(argv) >=2 else 
-    image = Image.open("bla2.png")
+    image = Image.open(argv[1] if len(argv) >=2 else "bla2.png")
+    image.thumbnail(size, Image.ANTIALIAS)
     canvas = Tkinter.Canvas(window, width=image.size[0], height=image.size[1],
                             cursor="crosshair")
     canvas.pack()
