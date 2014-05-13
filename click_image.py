@@ -3,6 +3,9 @@ from __future__ import print_function
 import Tkinter
 from PIL import Image, ImageTk
 from sys import argv
+import math
+
+ref_real_size = 2.5 #real world length of line between reference points (2nd and 3rd point)
 
 data = list()
 size = 1500, 1500
@@ -13,15 +16,15 @@ ref_point = 0,0
 ref_x_1 = 0
 ref_x_2 = 0
 ref_size = 0
-ref_real_size = 2.5 # real world length of line between reference points
 
 def main():
+    global ref_real_size
     window = Tkinter.Tk(className="Data Point Recorder")
-    #argv[1] if len(argv) >=2 else "bla2.png" 
-    if len(argv) < 2:
+    if len(argv) < 3:
         print_usage()
         exit()
     image = Image.open(argv[1])
+    ref_real_size = float(argv[2])
     image.thumbnail(size, Image.ANTIALIAS)
     canvas = Tkinter.Canvas(window, width=image.size[0], height=image.size[1],
                             cursor="crosshair")
@@ -40,6 +43,8 @@ def callback(event):
     global ref_point
     global ref_x_1
     global ref_x_2
+    global ref_y_1
+    global ref_y_2
     global ref_size
     global ref_real_size
     global data_counter
@@ -51,13 +56,18 @@ def callback(event):
     if workflow_counter == workflow_length:
         ref_point = (x,y)
         workflow_counter -= 1
+        canvas.create_oval(x-(os/2), y-(os/2), x-(os/2), y-(os/2), width=4, fill="red", outline="red")
     elif workflow_counter == workflow_length - 1:
         ref_x_1 = x
+        ref_y_1 = y
         workflow_counter -= 1
     elif workflow_counter == workflow_length - 2:
         ref_x_2 = x
-        ref_size = abs(ref_x_2 - ref_x_1)
+        ref_y_2 = y
+        ref_size = float(math.sqrt(pow(ref_x_2 - ref_x_1,2) + pow(ref_y_2 - ref_y_1,2)))
+        print(ref_size)
         ref_size /= ref_real_size
+        print(ref_size)
         workflow_counter -= 1
     else:
         x_ = (x - ref_point[0]) / ref_size
@@ -68,10 +78,13 @@ def callback(event):
         canvas.create_oval(x-(os/2), y-(os/2), x-(os/2), y-(os/2), width=4, fill="white", outline="white")
 
 def print_usage():
-    print("Usage: ", argv[0], "input_image.png [output.csv]")
+    print("Usage: ", argv[0], "input_image.png scale_line_size [output.csv]")
+    print("Example: ./click_image.py points.png 5.0")
     print("Data is written to output file on window close.")
-    print("First point clicked is origin.")
-    print("Second two points clicked define scale.")
+    print("First point clicked is origin and will be marked red.")
+    print("Second two points clicked define scale. Note: this only works in x direction!")
+    print("All the rest of the points will be marked white and pushed into a matrix that is exported in csv format")
+    print("Please add the scale line size, e.g. 2.5[cm] to predetermine the length of the scale line")
 
 
 if __name__ == '__main__':
