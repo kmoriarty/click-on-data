@@ -1,4 +1,12 @@
 #!/usr/bin/env python
+"""
+Authors: Alexander Moriarty (GH: @moriarty)
+         Alexander Hagg     (GH: @alexander-hagg)
+
+Quick script for recording data x,y points by clicking them in an image. 
+"""
+
+
 from __future__ import print_function
 import Tkinter
 from PIL import Image, ImageTk
@@ -51,15 +59,17 @@ def callback(event):
     canvas = event.widget
     x = event.x
     y = event.y
-    os = 4
+    os = 4 # oval size?
     print("clicked at: ", x, y)
     if workflow_counter == workflow_length:
         ref_point = (x,y)
         workflow_counter -= 1
         canvas.create_oval(x-(os/2), y-(os/2), x-(os/2), y-(os/2), width=4, fill="red", outline="red")
+        print("Point saved as origin")
     elif workflow_counter == workflow_length - 1:
         ref_x_1 = x
         ref_y_1 = y
+        canvas.create_oval(x-(os/2), y-(os/2), x-(os/2), y-(os/2), width=4, fill="blue", outline="blue")
         workflow_counter -= 1
     elif workflow_counter == workflow_length - 2:
         ref_x_2 = x
@@ -68,14 +78,17 @@ def callback(event):
         print(ref_size)
         ref_size /= ref_real_size
         print(ref_size)
+        canvas.create_oval(x-(os/2), y-(os/2), x-(os/2), y-(os/2), width=4, fill="blue", outline="blue")
+        canvas.create_line(ref_x_1, ref_y_1, ref_x_2, ref_y_2, fill="blue", dash=(4,4))
         workflow_counter -= 1
+        print("Scale line set, ready to record data. Data written to file on window close.")
     else:
         x_ = (x - ref_point[0]) / ref_size
         y_ = (y - ref_point[1]) / ref_size
         print("[",data_counter,"] real world coordinates: ", x_, y_)
         data_counter += 1
         data.append([x_, y_])
-        canvas.create_oval(x-(os/2), y-(os/2), x-(os/2), y-(os/2), width=4, fill="white", outline="white")
+        canvas.create_oval(x-(os/2), y-(os/2), x-(os/2), y-(os/2), width=4, fill="green", outline="green")
 
 def print_usage():
     print("Usage: ", argv[0], "input_image.png scale_line_size [output.csv]")
@@ -83,8 +96,12 @@ def print_usage():
     print("Data is written to output file on window close.")
     print("First point clicked is origin and will be marked red.")
     print("Second two points clicked define scale. Note: this only works in x direction!")
-    print("All the rest of the points will be marked white and pushed into a matrix that is exported in csv format")
+    print("The resulting scale line will be shown as a dashed blue line.")
+    print("All the rest of the points will be marked green and pushed into a matrix that is exported in csv format")
     print("Please add the scale line size, e.g. 2.5[cm] to predetermine the length of the scale line")
+    print("\n\n")
+    print("This was one of those quick scripts which was never intended to be seen, so code could use some work.")
+
 
 
 if __name__ == '__main__':
