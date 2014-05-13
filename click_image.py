@@ -5,7 +5,7 @@ from PIL import Image, ImageTk
 from sys import argv
 
 data = list()
-size = 600, 600
+size = 1500, 1500
 workflow_length = 3
 workflow_counter = 3
 data_counter = 0
@@ -65,7 +65,7 @@ def callback(event):
         print("[",data_counter,"] real world coordinates: ", x_, y_)
         data_counter += 1
         data.append([x_, y_])
-        canvas.create_oval(x, y, x+os, y+os, width=4, fill="white", outline="white")
+        canvas.create_oval(x-(os/2), y-(os/2), x-(os/2), y-(os/2), width=4, fill="white", outline="white")
 
 def print_usage():
     print("Usage: ", argv[0], "input_image.png [output.csv]")
