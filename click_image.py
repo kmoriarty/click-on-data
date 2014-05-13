@@ -33,7 +33,7 @@ def main():
     canvas.create_image(image.size[0]//2, image.size[1]//2, image=image_tk)
     canvas.bind("<Button-1>", callback)
     Tkinter.mainloop()
-    with open( argv[2] if len(argv) >=3 else 'output.csv', 'w') as f:
+    with open( argv[3] if len(argv) >=3 else 'output.csv', 'w') as f:
         for d in data:
             print(str(d[0])+","+str(d[1]), file=f)
 
