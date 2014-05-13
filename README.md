@@ -9,7 +9,7 @@ Usage:
 run click_image.py, it will print the usage. 
 
 Say you have recorded a bunch of data points, and you've done so on grid paper, or have a scaled line on the image.
-The scaled line should be along the X direction. This image is saved as your_image_file.png and your scale line had a length of 1. 
+Say this image is saved as your_image_file.png and your scale line had a length of 1. 
 
 Run:
 
